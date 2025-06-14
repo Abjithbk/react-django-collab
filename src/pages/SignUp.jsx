@@ -5,12 +5,13 @@ const SignUp = () => {
   const [username,setUserName] = useState("")
   const [email,setEmail] = useState("")
   const [password,setPassword] = useState("")
+  const [adminCode,setAdminCode] = useState("")
   const navigate =useNavigate()
   const handleSubmit = async (e) => {
      e.preventDefault();
     try {
       await axios.post("https://django-basic-authentication.onrender.com/api/register/",{
-        username:username,email:email,password:password
+        username:username,email:email,password:password,admin_code : adminCode
        });
      navigate("/Login")
      
@@ -26,21 +27,27 @@ const SignUp = () => {
       <form onSubmit={handleSubmit} action="" className='space-y-4'>
              <div>
               <label className='block mb-1 text-sm font-medium text-gray-700' htmlFor="">UserName</label>
-              <input value={username} onChange={(e) => {
+              <input required value={username} onChange={(e) => {
                 setUserName(e.target.value)
               }}  id="username" name="username" type="text" className='w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400' />
              </div>
              <div>
               <label className='block mb-1 text-sm font-medium text-gray-700' htmlFor="">Email</label>
-              <input value={email} onChange={(e) => {
+              <input  required value={email} onChange={(e) => {
                 setEmail(e.target.value)
               }} id="email" name= "email" type="Email" className='w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400' />
              </div>
              <div>
               <label className='block mb-1 text-sm font-medium text-gray-700' htmlFor="">Password</label>
-              <input value={password} onChange={(e)=> {
+              <input  required value={password} onChange={(e)=> {
                 setPassword(e.target.value)
               }} id="password" name="password" type="Password" className='w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400' />
+             </div>
+             <div>
+              <label className='block mb-1 text-sm font-medium text-gray-700' htmlFor="">Admin Code</label>
+              <input value={adminCode} onChange={(e)=> {
+                setAdminCode(e.target.value)
+              }} id="text" name="admincode" type="admincode" className='w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400' />
              </div>
              <button className='w-full px-4 py-2 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700'>
                  SignUp
