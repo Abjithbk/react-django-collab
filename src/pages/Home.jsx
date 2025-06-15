@@ -14,6 +14,7 @@ const Home = () => {
   const [searchEmail,setSearchEmail] = useState("")
   const [isSuperUser,setIsSuperUser] = useState("");
   const [isStaff,setIsStaff] = useState("");
+  const [searchType,setSearchType] = useState(null)
   const [page,setPage] = useState(1)
   const [totalPage,setTotalPage] = useState(1)
    const [error,setError] = useState("")
@@ -22,19 +23,15 @@ const Home = () => {
    const handleUser = async () => {
       try {
         const token = localStorage.getItem("access_token")
-        const response = await axios.get("https://django-basic-authentication.onrender.com/api/profile/",{
+        const response = await axios.get("https://django-basic-authentication.onrender.com/api/user-profile/",{
          headers : {
           Authorization : `Bearer ${token}`
          }
         })
-        setUser(response.data);
-        // console.log(response);
-        
-         
+        setUser(response.data); 
       }
       catch(error) {
           console.log(error);
-          //  setError("Failed to fetch name");
       }
    }
 
@@ -50,13 +47,13 @@ const Home = () => {
           },
           params : {
             page,
-            name : searchName,
+            username : searchName,
             email:searchEmail,
             is_superuser : isSuperUser,
             is_staff : isStaff,
           }
         });
-       console.log(response.data);
+      
        setAllUsers(response.data.results)
        setTotalPage(response.data.count);
 
@@ -97,7 +94,7 @@ const Home = () => {
      const token = localStorage.getItem("access_token");
 
      try {
-       await axios.put("https://django-basic-authentication.onrender.com/api/profile/",{
+       await axios.put("https://django-basic-authentication.onrender.com/api/user-profile/",{
         email : newEmail
        }, {
         headers : {
@@ -111,7 +108,7 @@ const Home = () => {
 
      }
      catch(error) {
-       console.log(error);
+      
        alert("Failed to change Email")
        
      }
@@ -126,12 +123,12 @@ const Home = () => {
               Authorization : `Bearer ${token}`
             }
            })
-           console.log(response.data);
+       
            navigate("/AdminPage",{ state : {message : response.data.message} })
            
          }
          catch(error) {
-            console.log(error);
+         
             setError("Not Authorized")
             
          }
@@ -146,10 +143,10 @@ const Home = () => {
       setUser(null)
       navigate("/Login")
       alert(response.data.message)
-    console.log(response.data.message);
+ 
     
      }
-  console.log(user);
+ 
   
   return (
     <div className='p-0 m-0 bg-gray-200'>
@@ -244,6 +241,21 @@ const Home = () => {
       </nav>
        <div className='max-w-2xl mx-auto p-6'>
           <div className='flex flex-wrap gap-4 mb-4'>
+
+             <select 
+            value={searchType}
+            onChange={(e) => {
+              setSearchType(e.target.value)
+            }}
+            className='p-2 border rounded-md'
+           >
+                <option value="">Search Criteria</option>
+                <option value="name">Search by Name</option>
+                <option value="email">Search by Email</option>
+           </select>
+
+            {
+              searchType === "name" && (
             <input 
             type="text"
             placeholder='Search by Name'
@@ -253,7 +265,11 @@ const Home = () => {
             }}
             className='p-2 border rounded-md flex-1'
             />
-            <input 
+              )
+            }
+       {
+        searchType === "email" && (
+        <input 
             type="email"
             placeholder='Search by Email'
             value={searchEmail}
@@ -261,7 +277,10 @@ const Home = () => {
               setSearchEmail(e.target.value)
             }}
             className='p-2 border rounded-md flex-1'
-            />
+            /> 
+        )
+       }
+          
            <select 
             value={isSuperUser}
             onChange={(e) => {
@@ -319,7 +338,7 @@ const Home = () => {
           >
              Previous
           </button>
-          <span>Page {page} of {totalPage}</span>
+          <span className='text-center'>Page {page} of {totalPage}</span>
           <button
           onClick={() => {
             setPage((prev) => Math.min(totalPage,prev+1))

@@ -8,14 +8,14 @@ const ForgotPass = () => {
     const [message,setMessage] = useState("")
     const [error,setError] = useState("")
     const navigate = useNavigate()
+    
      const handleForgotPass = async (e) => {
         e.preventDefault();
         try {
          const response = await axios.post("https://django-basic-authentication.onrender.com/api/forgot-password/",{
            username: userName,email:email,password:newPassword
          })
-        //  console.log(response);
-        //  console.log(response.data.message);
+       
          setMessage(response.data.message)
         setError("")
         setTimeout(()=> {
